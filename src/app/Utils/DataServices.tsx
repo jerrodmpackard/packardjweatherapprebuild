@@ -1,10 +1,13 @@
 import { ICurrentWeather } from "../Interfaces/ICurrentWeather";
 import { IFiveDayWeather } from "../Interfaces/IFiveDayWeather";
-import { apiKey } from "./Environment";
+// import { apiKey } from ".env";
+
+const apiKey = process.env.NEXT_PUBLIC_LIMITED_USE_KEY;
+console.log(apiKey);
 
 // Search API calls
 export const currentWeatherCall = async (cityName: string) => {
-    const promise = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${cityName}&APPID=${apiKey}&units=imperial`);
+    const promise = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${apiKey}&units=imperial`);
     const data: ICurrentWeather = await promise.json();
     return data;
 }
