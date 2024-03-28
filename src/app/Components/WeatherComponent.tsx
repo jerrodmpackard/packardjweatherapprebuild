@@ -42,11 +42,15 @@ const WeatherComponent = () => {
     const [day5Low, setDay5Low] = useState<string>('');
 
 
-    let lat: any;
-    let lon: any;
+    // Coordinates variables
+    let lat: number;
+    let lon: number;
+
+
     let dayNames: string[];
 
 
+    // Current Weather Fetches
     const getGeoWeatherData = async (lat: any, lon: any) => {
         let data = await currentGeoWeatherCall(lat, lon);
         setCityName(`${data.name}, ${data.sys.country}`);
@@ -67,15 +71,14 @@ const WeatherComponent = () => {
     }
 
 
+    // Five Day Forecast Fetches
     const getFiveDayWeatherData = async (city: string) => {
         let data = await fiveDayWeatherCall(city);
 
         dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
         let dayOne = new Date(data.list[0].dt_txt);
-        console.log(dayOne);
         let dayOneDay = dayOne.getDay();
-        console.log(dayOneDay);
         setDay1(dayNames[dayOneDay]);
         setDay1Icon(`https://openweathermap.org/img/wn/${data.list[0].weather[0].icon}@2x.png`);
         setDay1High(`H: ${Math.round(data.list[0].main.temp_max)}°`);
@@ -109,6 +112,7 @@ const WeatherComponent = () => {
         setDay5High(`H: ${Math.round(data.list[32].main.temp_max)}°`);
         setDay5Low(`L: ${Math.round(data.list[32].main.temp_min)}°`);
     }
+
 
     const getFiveDayGeoWeatherData = async (lat: any, lon: any) => {
         let data = await fiveDayGeoWeatherCall(lat, lon);
@@ -158,13 +162,17 @@ const WeatherComponent = () => {
     }
 
 
+    // Geolocation useEffect
     useEffect(() => {
-        const getLocation = () => {
+        const getLocation = async () => {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
                     (geoPosition) => {
-                        let lat = geoPosition.coords.latitude;
-                        let lon = geoPosition.coords.longitude;
+                        lat = geoPosition.coords.latitude;
+                        lon = geoPosition.coords.longitude;
+
+                        getGeoWeatherData(lat, lon);
+                        getFiveDayGeoWeatherData(lat, lon);
                     },
                     (geoError) => {
                         setError(geoError.message);
@@ -176,10 +184,10 @@ const WeatherComponent = () => {
         };
 
         getLocation();
-        getGeoWeatherData(lat, lon);
-        getFiveDayWeatherData('stockton');
-
     }, []);
+
+
+    // Search function useEffect
 
     return (
         <div className=''>
@@ -202,7 +210,7 @@ const WeatherComponent = () => {
                             <PiHeartStraightDuotone className='icon ml-auto' />
                         </div>
 
-                        <div className='grid justify-center pt-[50px] pb-9'>
+                        <div className='grid justify-center pb-9'>
                             <h1 className='text-center text-5xl font-normal pb-7'>{cityName}</h1>
                             <p className='text-center text-5xl font-normal pb-8'>{currentWeather}</p>
                             <p className='text-center text-4xl font-normal pb-8'>{currentConditions}</p>

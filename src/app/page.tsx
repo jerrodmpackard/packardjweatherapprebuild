@@ -4,8 +4,12 @@ import WeatherComponent from "./Components/WeatherComponent";
 
 export default function Home() {
   return (
-    <div className='bg-cover bg-fixed h-full' style={{ backgroundImage: `url(${background})` }}>
-      <WeatherComponent />
+    <div className="relative min-h-screen">
+      <div className=' absolute inset-0 bg-cover bg-fixed min-h-screen' style={{ backgroundImage: `url(${background.src})`, opacity: '0.7' }}></div>
+      
+      <div className="relative z-10">
+        <WeatherComponent />
+      </div>
     </div>
   );
 }
