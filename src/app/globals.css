@@ -40,3 +40,17 @@ h1 {
 .divBackground {
   background-color: rgb(254, 200, 154, 70%);
 }
+
+.heartIcon {
+  display: inline-block;
+}
+
+.icon {
+  color: black;
+  height: 35px;
+  width: 35px;
+}
+
+.icon path:first-of-type {
+  fill: red; 
+}
