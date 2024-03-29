@@ -256,7 +256,8 @@ const WeatherComponent = () => {
         }
 
         setFavorites(favorites);
-    }, [cityName, heartClass]);
+
+    }, [cityName, heartClass, favorites]);
 
 
     // Remove Favorites helper function
@@ -269,10 +270,11 @@ const WeatherComponent = () => {
     }
 
 
+    // Remove Favorites useEffect
     useEffect(() => {
         const favorites = getLocalStorage();
         setFavorites(favorites);
-    }, []);
+    }, [favorites]);
 
 
     // Search from favorites helper function
