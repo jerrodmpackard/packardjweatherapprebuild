@@ -7,6 +7,8 @@ import { PiHeartStraightDuotone } from 'react-icons/pi'
 const WeatherComponent = () => {
 
     // Current Weather Use States
+    const [userInput, setUserInput] = useState<string>('');
+    const [citySearch, setCitySearch] = useState<string>('');
     const [cityName, setCityName] = useState<string>('');
     const [currentWeather, setCurrentWeather] = useState<string>('');
     const [currentConditions, setCurrentConditions] = useState<string>('');
@@ -47,6 +49,7 @@ const WeatherComponent = () => {
     let lon: number;
 
 
+    // Day Names Array for Five Day Forecast
     let dayNames: string[];
 
 
@@ -61,8 +64,8 @@ const WeatherComponent = () => {
     }
 
 
-    const getWeatherData = async (city: string) => {
-        let data = await currentWeatherCall(city);
+    const getWeatherData = async (citySearch: string) => {
+        let data = await currentWeatherCall(citySearch);
         setCityName(`${data.name}, ${data.sys.country}`);
         setCurrentWeather(`${Math.round(data.main.temp)}° F`);
         setCurrentConditions(`${data.weather[0].description}`);
@@ -72,8 +75,8 @@ const WeatherComponent = () => {
 
 
     // Five Day Forecast Fetches
-    const getFiveDayWeatherData = async (city: string) => {
-        let data = await fiveDayWeatherCall(city);
+    const getFiveDayWeatherData = async (citySearch: string) => {
+        let data = await fiveDayWeatherCall(citySearch);
 
         dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
@@ -156,9 +159,11 @@ const WeatherComponent = () => {
     }
 
 
-    const handleSearch = async (city: string) => {
-        getWeatherData(city);
-        getFiveDayWeatherData(city);
+    const handleSearch = () => {
+        if (userInput) {
+            setCitySearch(userInput);
+        }
+        setUserInput('');
     }
 
 
@@ -180,6 +185,11 @@ const WeatherComponent = () => {
                 );
             } else {
                 setError('Location services are not enabled.');
+                lat = 37.9577016;
+                lon = -121.2907796;
+
+                getGeoWeatherData(lat, lon);
+                getFiveDayGeoWeatherData(lat, lon);
             }
         };
 
@@ -188,6 +198,11 @@ const WeatherComponent = () => {
 
 
     // Search function useEffect
+    useEffect(() => {
+        getWeatherData(citySearch);
+        getFiveDayWeatherData(citySearch);
+    }, [citySearch]);
+
 
     return (
         <div className=''>
@@ -195,8 +210,8 @@ const WeatherComponent = () => {
             {/* Search Bar */}
             <div className='pb-14'>
                 <div className='flex flex-row gap-3 justify-center items-center searchbarBackground h-20'>
-                    <input className='searchInputBackground border-none rounded-lg text-xl h-10' id='search' type="text" placeholder='Search for a city' />
-                    <button className='py-2 px-4 h-10 rounded-lg text-xl searchButtonBackground border-none' onClick={handleSearch} >Search</button>
+                    <input value={userInput} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUserInput(e.target.value)} className='searchInputBackground border-none rounded-lg text-xl h-10' id='search' type="text" placeholder='Search for a city' />
+                    <button onClick={handleSearch} className='py-2 px-4 h-10 rounded-lg text-xl searchButtonBackground border-none'  >Search</button>
                 </div>
             </div>
 
