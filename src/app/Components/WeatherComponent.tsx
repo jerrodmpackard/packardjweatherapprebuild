@@ -1,20 +1,21 @@
 'use client'
 import React, { useEffect, useState } from 'react'
-import { Coord, ICurrentWeather } from '../Interfaces/ICurrentWeather';
 import { currentGeoWeatherCall, currentWeatherCall, fiveDayGeoWeatherCall, fiveDayWeatherCall } from '../Utils/DataServices';
+import { saveToLocalStorage, getLocalStorage, removeFromLocalStorage } from '../Utils/LocalStorage';
 import { PiHeartStraightDuotone } from 'react-icons/pi'
 
 const WeatherComponent = () => {
 
     // Current Weather Use States
     const [userInput, setUserInput] = useState<string>('');
-    const [citySearch, setCitySearch] = useState<string>('');
+    const [citySearch, setCitySearch] = useState<string>('stockton');
     const [cityName, setCityName] = useState<string>('');
     const [currentWeather, setCurrentWeather] = useState<string>('');
     const [currentConditions, setCurrentConditions] = useState<string>('');
     const [highLow, setHighLow] = useState<string>('');
     const [icon, setIcon] = useState<string>('');
     const [error, setError] = useState<string | null>(null);
+    const [searchBool, setSearchBool] = useState<boolean>(false);
 
 
     // Five Day Forecast Use States
@@ -42,6 +43,10 @@ const WeatherComponent = () => {
     const [day5Icon, setDay5Icon] = useState<string>('');
     const [day5High, setDay5High] = useState<string>('');
     const [day5Low, setDay5Low] = useState<string>('');
+
+
+    // Favorites useState
+    const [favorites, setFavorites] = useState<string[]>([]);
 
 
     // Coordinates variables
@@ -160,6 +165,8 @@ const WeatherComponent = () => {
 
 
     const handleSearch = () => {
+        setSearchBool(true);
+
         if (userInput) {
             setCitySearch(userInput);
         }
@@ -175,6 +182,8 @@ const WeatherComponent = () => {
                     (geoPosition) => {
                         lat = geoPosition.coords.latitude;
                         lon = geoPosition.coords.longitude;
+
+                        setCityName('Locating...');
 
                         getGeoWeatherData(lat, lon);
                         getFiveDayGeoWeatherData(lat, lon);
@@ -199,16 +208,33 @@ const WeatherComponent = () => {
 
     // Search function useEffect
     useEffect(() => {
-        getWeatherData(citySearch);
-        getFiveDayWeatherData(citySearch);
+        if (searchBool) {
+            getWeatherData(citySearch);
+            getFiveDayWeatherData(citySearch);
+        }
     }, [citySearch]);
+
+
+    // Favorites
+    const handleFavorite = () => {
+        const favoritesList = getLocalStorage();
+
+        if (!favoritesList.includes(cityName)) {
+            saveToLocalStorage(cityName);
+            // change heart icon here
+        } else {
+            removeFromLocalStorage(cityName);
+            // change heart icon here
+        }
+
+    }
 
 
     return (
         <div className=''>
 
             {/* Search Bar */}
-            <div className='pb-14'>
+            <div className='pb-6 lg:pb-14'>
                 <div className='flex flex-row gap-3 justify-center items-center searchbarBackground h-20'>
                     <input value={userInput} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUserInput(e.target.value)} className='searchInputBackground border-none rounded-lg text-xl h-10' id='search' type="text" placeholder='Search for a city' />
                     <button onClick={handleSearch} className='py-2 px-4 h-10 rounded-lg text-xl searchButtonBackground border-none'  >Search</button>
@@ -216,17 +242,17 @@ const WeatherComponent = () => {
             </div>
 
             {/* Current Weather */}
-            <div className="grid grid-cols-5 gap-10 px-10">
+            <div className="grid grid-cols-5 gap-10 px-6 lg:px-10">
 
                 <div className="col-span-5 lg:col-span-3">
                     <div className='divBackground grid grid-cols-1 lg:grid-cols-2 rounded-lg pt-4'>
                         {/* heart button */}
                         <div className='flex order-first lg:col-span-2 justify-end heartIcon pr-7'>
-                            <PiHeartStraightDuotone className='icon ml-auto' />
+                            <PiHeartStraightDuotone className='icon ml-auto' onClick={handleFavorite} />
                         </div>
 
                         <div className='grid justify-center pb-9'>
-                            <h1 className='text-center text-5xl font-normal pb-7'>{cityName}</h1>
+                            <h1 className='text-center pacifico text-5xl font-normal pb-7'>{cityName}</h1>
                             <p className='text-center text-5xl font-normal pb-8'>{currentWeather}</p>
                             <p className='text-center text-4xl font-normal pb-8'>{currentConditions}</p>
                             <p className='text-center text-4xl font-normal'>{highLow}</p>
@@ -241,7 +267,7 @@ const WeatherComponent = () => {
 
                 {/* Favorites List */}
                 <div className="divBackground col-span-5 lg:col-span-2 rounded-lg lg:ml-20">
-                    <h1 className='text-center text-[32px] py-2'>Favorites</h1>
+                    <h1 className='text-center pacifico text-[32px] py-2'>Favorites</h1>
 
                     <hr className='border-black w-4/5 mx-auto' />
 
@@ -252,33 +278,33 @@ const WeatherComponent = () => {
             </div>
 
             {/* Five Day Forecast */}
-            <div className='grid grid-cols-1 lg:grid-cols-5 gap-10 py-10 lg:pt-24 px-10'>
+            <div className='grid grid-cols-1 lg:grid-cols-5 gap-10 py-10 lg:pt-24 px-6 lg:px-10'>
                 <div className='divBackground rounded-lg py-4'>
-                    <h1 className='text-center text-[32px]'>{day1}</h1>
+                    <h1 className='text-center pacifico text-[32px]'>{day1}</h1>
                     <img className='mx-auto' src={day1Icon} alt="Day 1 weather icon" />
                     <p className='text-center text-xl'>{day1High}</p>
                     <p className='text-center text-xl'>{day1Low}</p>
                 </div>
                 <div className='divBackground rounded-lg py-4'>
-                    <h1 className='text-center text-[32px]'>{day2}</h1>
+                    <h1 className='text-center pacifico text-[32px]'>{day2}</h1>
                     <img className='mx-auto' src={day2Icon} alt="Day 2 weather icon" />
                     <p className='text-center text-xl'>{day2High}</p>
                     <p className='text-center text-xl'>{day2Low}</p>
                 </div>
                 <div className='divBackground rounded-lg py-4'>
-                    <h1 className='text-center text-[32px]'>{day3}</h1>
+                    <h1 className='text-center pacifico text-[32px]'>{day3}</h1>
                     <img className='mx-auto' src={day3Icon} alt="Day 3 weather icon" />
                     <p className='text-center text-xl'>{day3High}</p>
                     <p className='text-center text-xl'>{day3Low}</p>
                 </div>
                 <div className='divBackground rounded-lg py-4'>
-                    <h1 className='text-center text-[32px]'>{day4}</h1>
+                    <h1 className='text-center pacifico text-[32px]'>{day4}</h1>
                     <img className='mx-auto' src={day4Icon} alt="Day 4 weather icon" />
                     <p className='text-center text-xl'>{day4High}</p>
                     <p className='text-center text-xl'>{day4Low}</p>
                 </div>
                 <div className='divBackground rounded-lg py-4'>
-                    <h1 className='text-center text-[32px]'>{day5}</h1>
+                    <h1 className='text-center pacifico text-[32px]'>{day5}</h1>
                     <img className='mx-auto' src={day5Icon} alt="Day 5 weather icon" />
                     <p className='text-center text-xl'>{day5High}</p>
                     <p className='text-center text-xl'>{day5Low}</p>
