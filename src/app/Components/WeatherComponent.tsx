@@ -249,15 +249,9 @@ const WeatherComponent = () => {
     useEffect(() => {
         const favorites = getLocalStorage();
 
-        if (favorites.includes(cityName)) {
-            setHeartClass('iconFill ');
-        } else {
-            setHeartClass('icon ');
-        }
-
         setFavorites(favorites);
 
-    }, [cityName, heartClass, favorites]);
+    }, [cityName, heartClass]);
 
 
     // Remove Favorites helper function
@@ -272,8 +266,13 @@ const WeatherComponent = () => {
 
     // Remove Favorites useEffect
     useEffect(() => {
-        const favorites = getLocalStorage();
-        setFavorites(favorites);
+
+        if (favorites.includes(cityName)) {
+            setHeartClass('iconFill ');
+        } else {
+            setHeartClass('icon ');
+        }
+
     }, [favorites]);
 
 
@@ -296,7 +295,7 @@ const WeatherComponent = () => {
                     </div>
 
                     <div className='flex flex-row items-center gap-3'>
-                        <input value={userInput} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUserInput(e.target.value)} className='searchInputBackground border-none rounded-lg text-xl h-10' id='search' type="text" placeholder='Search for a city' />
+                        <input value={userInput} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUserInput(e.target.value)} className='searchInputBackground border-none rounded-lg text-xl h-10' type="text" placeholder='Search for a city' />
                         <button onClick={handleSearch} className='py-2 px-4 h-10 rounded-lg text-xl searchButtonBackground border-none'  >Search</button>
                     </div>
                 </div>
@@ -304,7 +303,7 @@ const WeatherComponent = () => {
                 {/* Mobile Search Bar */}
                 <div className='flex flex-row gap-3 justify-center items-center searchbarBackground h-20 lg:hidden'>
                     <PiSunglasses className='h-[50px] w-[50px]' />
-                    <input value={userInput} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUserInput(e.target.value)} className='searchInputBackground border-none rounded-lg text-xl h-10' id='search' type="text" placeholder='Search for a city' />
+                    <input value={userInput} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUserInput(e.target.value)} className='searchInputBackground border-none rounded-lg text-xl h-10' type="text" placeholder='Search for a city' />
                     <button onClick={handleSearch} className='py-2 px-4 h-10 rounded-lg text-xl searchButtonBackground border-none'  >Search</button>
                 </div>
             </div>
@@ -320,10 +319,10 @@ const WeatherComponent = () => {
                         </div>
 
                         <div className='grid justify-center px-4 pb-9'>
-                            <h1 className='text-center pacifico text-5xl font-normal  mb-10'>{cityName}</h1>
-                            <p className='text-center text-5xl font-normal mb-10'>{currentWeather}</p>
-                            <p className='text-center text-4xl font-normal mb-10'>{currentConditions}</p>
-                            <p className='text-center text-4xl font-normal'>{highLow}</p>
+                            <h1 className='text-center pacifico text-4xl lg:text-5xl font-normal mb-10'>{cityName}</h1>
+                            <p className='text-center text-4xl lg:text-5xl font-normal mb-10'>{currentWeather}</p>
+                            <p className='text-center text-3xl lg:text-4xl font-normal mb-10'>{currentConditions}</p>
+                            <p className='text-center text-3xl lg:text-4xl font-normal'>{highLow}</p>
                         </div>
 
                         {/* Current weather icon */}
@@ -335,7 +334,7 @@ const WeatherComponent = () => {
 
                 {/* Favorites List */}
                 <div className="divBackground col-span-5 lg:col-span-2 rounded-lg lg:ml-20 max-h-[383px] overflow-y-auto">
-                    <h1 className='text-center pacifico text-[32px] py-2'>Favorites</h1>
+                    <h1 className='text-center pacifico text-3xl lg:text-[32px] py-2'>Favorites</h1>
 
                     <hr className='border-black w-4/5 mx-auto' />
 
@@ -344,7 +343,7 @@ const WeatherComponent = () => {
                             return (
                                 <div key={idx} className='flex flex-row items-center gap-4'>
                                     <PiHeartStraightDuotone className='iconFill cursor-pointer' onClick={() => handleRemoveFavorite(city)} />
-                                    <p className='text-[32px] cursor-pointer' onClick={() => handleSearchFromFavorites(city)}>{city}</p>
+                                    <p className='text-3xl cursor-pointer pb-2' onClick={() => handleSearchFromFavorites(city)}>{city}</p>
                                 </div>
                             )
                         })}
