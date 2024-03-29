@@ -8,7 +8,7 @@ const WeatherComponent = () => {
 
     // Current Weather Use States
     const [userInput, setUserInput] = useState<string>('');
-    const [citySearch, setCitySearch] = useState<string>('stockton');
+    const [citySearch, setCitySearch] = useState<string>('');
     const [cityName, setCityName] = useState<string>('');
     const [currentWeather, setCurrentWeather] = useState<string>('');
     const [currentConditions, setCurrentConditions] = useState<string>('');
@@ -16,6 +16,7 @@ const WeatherComponent = () => {
     const [icon, setIcon] = useState<string>('');
     const [error, setError] = useState<string | null>(null);
     const [searchBool, setSearchBool] = useState<boolean>(false);
+    const [heartClass, setHeartClass] = useState<string>('');
 
 
     // Five Day Forecast Use States
@@ -70,55 +71,65 @@ const WeatherComponent = () => {
 
 
     const getWeatherData = async (citySearch: string) => {
-        let data = await currentWeatherCall(citySearch);
-        setCityName(`${data.name}, ${data.sys.country}`);
-        setCurrentWeather(`${Math.round(data.main.temp)}° F`);
-        setCurrentConditions(`${data.weather[0].description}`);
-        setHighLow(`High: ${Math.round(data.main.temp_max)}° Low: ${Math.round(data.main.temp_min)}°`);
-        setIcon(`https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`);
+        try {
+            let data = await currentWeatherCall(citySearch);
+            setCityName(`${data.name}, ${data.sys.country}`);
+            setCurrentWeather(`${Math.round(data.main.temp)}° F`);
+            setCurrentConditions(`${data.weather[0].description}`);
+            setHighLow(`High: ${Math.round(data.main.temp_max)}° Low: ${Math.round(data.main.temp_min)}°`);
+            setIcon(`https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`);
+
+        } catch (error) {
+            alert(`${citySearch} is not a valid city or location. Please try again.`);
+        }
     }
 
 
     // Five Day Forecast Fetches
     const getFiveDayWeatherData = async (citySearch: string) => {
-        let data = await fiveDayWeatherCall(citySearch);
+        try {
+            let data = await fiveDayWeatherCall(citySearch);
 
-        dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+            dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
-        let dayOne = new Date(data.list[0].dt_txt);
-        let dayOneDay = dayOne.getDay();
-        setDay1(dayNames[dayOneDay]);
-        setDay1Icon(`https://openweathermap.org/img/wn/${data.list[0].weather[0].icon}@2x.png`);
-        setDay1High(`H: ${Math.round(data.list[0].main.temp_max)}°`);
-        setDay1Low(`L: ${Math.round(data.list[0].main.temp_min)}°`);
+            let dayOne = new Date(data.list[0].dt_txt);
+            let dayOneDay = dayOne.getDay();
+            setDay1(dayNames[dayOneDay]);
+            setDay1Icon(`https://openweathermap.org/img/wn/${data.list[0].weather[0].icon}@2x.png`);
+            setDay1High(`H: ${Math.round(data.list[0].main.temp_max)}°`);
+            setDay1Low(`L: ${Math.round(data.list[0].main.temp_min)}°`);
 
-        let dayTwo = new Date(data.list[8].dt_txt);
-        let dayTwoDay = dayTwo.getDay();
-        setDay2(dayNames[dayTwoDay]);
-        setDay2Icon(`https://openweathermap.org/img/wn/${data.list[8].weather[0].icon}@2x.png`);
-        setDay2High(`H: ${Math.round(data.list[8].main.temp_max)}°`);
-        setDay2Low(`L: ${Math.round(data.list[8].main.temp_min)}°`);
+            let dayTwo = new Date(data.list[8].dt_txt);
+            let dayTwoDay = dayTwo.getDay();
+            setDay2(dayNames[dayTwoDay]);
+            setDay2Icon(`https://openweathermap.org/img/wn/${data.list[8].weather[0].icon}@2x.png`);
+            setDay2High(`H: ${Math.round(data.list[8].main.temp_max)}°`);
+            setDay2Low(`L: ${Math.round(data.list[8].main.temp_min)}°`);
 
-        let dayThree = new Date(data.list[16].dt_txt);
-        let dayThreeDay = dayThree.getDay();
-        setDay3(dayNames[dayThreeDay]);
-        setDay3Icon(`https://openweathermap.org/img/wn/${data.list[16].weather[0].icon}@2x.png`);
-        setDay3High(`H: ${Math.round(data.list[16].main.temp_max)}°`);
-        setDay3Low(`L: ${Math.round(data.list[16].main.temp_min)}°`);
+            let dayThree = new Date(data.list[16].dt_txt);
+            let dayThreeDay = dayThree.getDay();
+            setDay3(dayNames[dayThreeDay]);
+            setDay3Icon(`https://openweathermap.org/img/wn/${data.list[16].weather[0].icon}@2x.png`);
+            setDay3High(`H: ${Math.round(data.list[16].main.temp_max)}°`);
+            setDay3Low(`L: ${Math.round(data.list[16].main.temp_min)}°`);
 
-        let dayFour = new Date(data.list[24].dt_txt);
-        let dayFourDay = dayFour.getDay();
-        setDay4(dayNames[dayFourDay]);
-        setDay4Icon(`https://openweathermap.org/img/wn/${data.list[24].weather[0].icon}@2x.png`);
-        setDay4High(`H: ${Math.round(data.list[24].main.temp_max)}°`);
-        setDay4Low(`L: ${Math.round(data.list[24].main.temp_min)}°`);
+            let dayFour = new Date(data.list[24].dt_txt);
+            let dayFourDay = dayFour.getDay();
+            setDay4(dayNames[dayFourDay]);
+            setDay4Icon(`https://openweathermap.org/img/wn/${data.list[24].weather[0].icon}@2x.png`);
+            setDay4High(`H: ${Math.round(data.list[24].main.temp_max)}°`);
+            setDay4Low(`L: ${Math.round(data.list[24].main.temp_min)}°`);
 
-        let dayFive = new Date(data.list[32].dt_txt);
-        let dayFiveDay = dayFive.getDay();
-        setDay5(dayNames[dayFiveDay]);
-        setDay5Icon(`https://openweathermap.org/img/wn/${data.list[32].weather[0].icon}@2x.png`);
-        setDay5High(`H: ${Math.round(data.list[32].main.temp_max)}°`);
-        setDay5Low(`L: ${Math.round(data.list[32].main.temp_min)}°`);
+            let dayFive = new Date(data.list[32].dt_txt);
+            let dayFiveDay = dayFive.getDay();
+            setDay5(dayNames[dayFiveDay]);
+            setDay5Icon(`https://openweathermap.org/img/wn/${data.list[32].weather[0].icon}@2x.png`);
+            setDay5High(`H: ${Math.round(data.list[32].main.temp_max)}°`);
+            setDay5Low(`L: ${Math.round(data.list[32].main.temp_min)}°`);
+
+        } catch (error) {
+
+        }
     }
 
 
@@ -164,6 +175,7 @@ const WeatherComponent = () => {
     }
 
 
+    // Handle Search helper function for onClick
     const handleSearch = () => {
         setSearchBool(true);
 
@@ -177,29 +189,29 @@ const WeatherComponent = () => {
     // Geolocation useEffect
     useEffect(() => {
         const getLocation = async () => {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    (geoPosition) => {
-                        lat = geoPosition.coords.latitude;
-                        lon = geoPosition.coords.longitude;
+            navigator.geolocation.getCurrentPosition(
+                (geoPosition) => {
+                    lat = geoPosition.coords.latitude;
+                    lon = geoPosition.coords.longitude;
 
-                        setCityName('Locating...');
+                    setCityName('Locating...');
 
-                        getGeoWeatherData(lat, lon);
-                        getFiveDayGeoWeatherData(lat, lon);
-                    },
-                    (geoError) => {
-                        setError(geoError.message);
-                    }
-                );
-            } else {
-                setError('Location services are not enabled.');
-                lat = 37.9577016;
-                lon = -121.2907796;
+                    getGeoWeatherData(lat, lon);
+                    getFiveDayGeoWeatherData(lat, lon);
+                },
+                (geoError) => {
+                    setError(geoError.message);
 
-                getGeoWeatherData(lat, lon);
-                getFiveDayGeoWeatherData(lat, lon);
-            }
+                    lat = 37.9577016;
+                    lon = -121.2907796;
+
+                    getGeoWeatherData(lat, lon);
+                    getFiveDayGeoWeatherData(lat, lon);
+                }
+            );
+
+            setError('Location services are not enabled.');
+
         };
 
         getLocation();
@@ -208,27 +220,53 @@ const WeatherComponent = () => {
 
     // Search function useEffect
     useEffect(() => {
+
         if (searchBool) {
             getWeatherData(citySearch);
             getFiveDayWeatherData(citySearch);
         }
+
     }, [citySearch]);
 
 
-    // Favorites
+    // Favorites helper function
     const handleFavorite = () => {
         const favoritesList = getLocalStorage();
 
-        if (!favoritesList.includes(cityName)) {
-            saveToLocalStorage(cityName);
-            // change heart icon here
-        } else {
+        if (favoritesList.includes(cityName)) {
             removeFromLocalStorage(cityName);
-            // change heart icon here
+            setHeartClass('icon ');
+        } else {
+            saveToLocalStorage(cityName)
+            setHeartClass('iconFill ');
         }
 
+        setFavorites(favoritesList);
     }
 
+
+    // Favorites useEffect
+    useEffect(() => {
+        const favorites = getLocalStorage();
+
+        if (favorites.includes(cityName)) {
+            setHeartClass('iconFill ');
+        } else {
+            setHeartClass('icon ');
+        }
+
+        setFavorites(favorites);
+    }, [cityName, heartClass]);
+
+
+    // Remove Favorites helper function
+    const handleRemoveFavorite = (removeCity: string) => {
+        const favorites = getLocalStorage();
+
+        if (favorites.includes(removeCity)) {
+
+        }
+    }
 
     return (
         <div className=''>
@@ -248,13 +286,13 @@ const WeatherComponent = () => {
                     <div className='divBackground grid grid-cols-1 lg:grid-cols-2 rounded-lg pt-4'>
                         {/* heart button */}
                         <div className='flex order-first lg:col-span-2 justify-end heartIcon pr-7'>
-                            <PiHeartStraightDuotone className='icon ml-auto' onClick={handleFavorite} />
+                            <PiHeartStraightDuotone className={heartClass + ' ml-auto'} onClick={handleFavorite} />
                         </div>
 
-                        <div className='grid justify-center pb-9'>
-                            <h1 className='text-center pacifico text-5xl font-normal pb-7'>{cityName}</h1>
-                            <p className='text-center text-5xl font-normal pb-8'>{currentWeather}</p>
-                            <p className='text-center text-4xl font-normal pb-8'>{currentConditions}</p>
+                        <div className='grid justify-center pl-4 pb-9'>
+                            <h1 className='text-center pacifico text-5xl font-normal mb-10'>{cityName}</h1>
+                            <p className='text-center text-5xl font-normal mb-10'>{currentWeather}</p>
+                            <p className='text-center text-4xl font-normal mb-10'>{currentConditions}</p>
                             <p className='text-center text-4xl font-normal'>{highLow}</p>
                         </div>
 
@@ -266,13 +304,20 @@ const WeatherComponent = () => {
                 </div>
 
                 {/* Favorites List */}
-                <div className="divBackground col-span-5 lg:col-span-2 rounded-lg lg:ml-20">
+                <div className="divBackground col-span-5 lg:col-span-2 rounded-lg lg:ml-20 max-h-[383px] overflow-y-scroll">
                     <h1 className='text-center pacifico text-[32px] py-2'>Favorites</h1>
 
                     <hr className='border-black w-4/5 mx-auto' />
 
-                    <div>
-                        {/* insert favorites here */}
+                    <div className='px-5 py-3 '>
+                        {favorites.map((city, idx) => {
+                            return (
+                                <div className='flex flex-row items-center gap-4'>
+                                    <PiHeartStraightDuotone className='iconFill' onClick={handleRemoveFavorite} />
+                                    <p className='text-[32px]'>{city}</p>
+                                </div>
+                            )
+                        })}
                     </div>
                 </div>
             </div>

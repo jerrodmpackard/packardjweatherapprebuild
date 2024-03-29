@@ -51,6 +51,12 @@ h1 {
   width: 35px;
 }
 
-.icon path:first-of-type {
+.iconFill {
+  color: black;
+  height: 35px;
+  width: 35px;
+}
+
+.iconFill path:first-of-type {
   fill: red; 
 }
