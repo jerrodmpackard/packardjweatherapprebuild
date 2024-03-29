@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react'
 import { currentGeoWeatherCall, currentWeatherCall, fiveDayGeoWeatherCall, fiveDayWeatherCall } from '../Utils/DataServices';
 import { saveToLocalStorage, getLocalStorage, removeFromLocalStorage } from '../Utils/LocalStorage';
-import { PiHeartStraightDuotone } from 'react-icons/pi'
+import { PiHeartStraightDuotone, PiSunglasses } from 'react-icons/pi'
 
 const WeatherComponent = () => {
 
@@ -262,7 +262,7 @@ const WeatherComponent = () => {
     // Remove Favorites helper function
     const handleRemoveFavorite = (removeCity: string) => {
         removeFromLocalStorage(removeCity);
-        
+
         const favorites = getLocalStorage();
 
         setFavorites(favorites);
@@ -274,12 +274,32 @@ const WeatherComponent = () => {
         setFavorites(favorites);
     }, []);
 
+
+    // Search from favorites helper function
+    const handleSearchFromFavorites = (favoriteCity: string) => {
+        getWeatherData(favoriteCity);
+        getFiveDayWeatherData(favoriteCity);
+    }
+
     return (
         <div className=''>
 
             {/* Search Bar */}
             <div className='pb-6 lg:pb-14'>
-                <div className='flex flex-row gap-3 justify-center items-center searchbarBackground h-20'>
+                <div className='lg:flex flex-row items-center justify-between px-4 searchbarBackground h-20 hidden'>
+                    <div className='flex flex-row items-center gap-10'>
+                        <PiSunglasses className='h-[50px] w-[50px]' />
+                        <h1 className='pacifico text-3xl'>Sunny Weather</h1>
+                    </div>
+
+                    <div className='flex flex-row items-center gap-3'>
+                        <input value={userInput} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUserInput(e.target.value)} className='searchInputBackground border-none rounded-lg text-xl h-10' id='search' type="text" placeholder='Search for a city' />
+                        <button onClick={handleSearch} className='py-2 px-4 h-10 rounded-lg text-xl searchButtonBackground border-none'  >Search</button>
+                    </div>
+                </div>
+
+                <div className='flex flex-row gap-3 justify-center items-center searchbarBackground h-20 lg:hidden'>
+                    <PiSunglasses className='h-[50px] w-[50px]' />
                     <input value={userInput} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUserInput(e.target.value)} className='searchInputBackground border-none rounded-lg text-xl h-10' id='search' type="text" placeholder='Search for a city' />
                     <button onClick={handleSearch} className='py-2 px-4 h-10 rounded-lg text-xl searchButtonBackground border-none'  >Search</button>
                 </div>
@@ -292,10 +312,10 @@ const WeatherComponent = () => {
                     <div className='divBackground grid grid-cols-1 lg:grid-cols-2 rounded-lg pt-4'>
                         {/* heart button */}
                         <div className='flex order-first lg:col-span-2 justify-end heartIcon pr-7'>
-                            <PiHeartStraightDuotone className={heartClass + ' ml-auto'} onClick={handleFavorite} />
+                            <PiHeartStraightDuotone className={heartClass + ' ml-auto cursor-pointer'} onClick={handleFavorite} />
                         </div>
 
-                        <div className='grid justify-center pl-4 pb-9'>
+                        <div className='grid justify-center px-4 pb-9'>
                             <h1 className='text-center pacifico text-5xl font-normal mb-10'>{cityName}</h1>
                             <p className='text-center text-5xl font-normal mb-10'>{currentWeather}</p>
                             <p className='text-center text-4xl font-normal mb-10'>{currentConditions}</p>
@@ -319,8 +339,8 @@ const WeatherComponent = () => {
                         {favorites.map((city, idx) => {
                             return (
                                 <div key={idx} className='flex flex-row items-center gap-4'>
-                                    <PiHeartStraightDuotone className='iconFill' onClick={() => handleRemoveFavorite(city)} />
-                                    <p className='text-[32px]'>{city}</p>
+                                    <PiHeartStraightDuotone className='iconFill cursor-pointer' onClick={() => handleRemoveFavorite(city)} />
+                                    <p className='text-[32px] cursor-pointer' onClick={() => handleSearchFromFavorites(city)}>{city}</p>
                                 </div>
                             )
                         })}
@@ -332,32 +352,32 @@ const WeatherComponent = () => {
             <div className='grid grid-cols-1 lg:grid-cols-5 gap-10 py-10 lg:pt-24 px-6 lg:px-10'>
                 <div className='divBackground rounded-lg py-4'>
                     <h1 className='text-center pacifico text-[32px]'>{day1}</h1>
-                    <img className='mx-auto' src={day1Icon} alt="Day 1 weather icon" />
-                    <p className='text-center text-xl'>{day1High}</p>
+                    <img className='mx-auto pb-4' src={day1Icon} alt="Day 1 weather icon" />
+                    <p className='text-center text-xl pb-4'>{day1High}</p>
                     <p className='text-center text-xl'>{day1Low}</p>
                 </div>
                 <div className='divBackground rounded-lg py-4'>
                     <h1 className='text-center pacifico text-[32px]'>{day2}</h1>
-                    <img className='mx-auto' src={day2Icon} alt="Day 2 weather icon" />
-                    <p className='text-center text-xl'>{day2High}</p>
+                    <img className='mx-auto pb-4' src={day2Icon} alt="Day 2 weather icon" />
+                    <p className='text-center text-xl pb-4'>{day2High}</p>
                     <p className='text-center text-xl'>{day2Low}</p>
                 </div>
                 <div className='divBackground rounded-lg py-4'>
                     <h1 className='text-center pacifico text-[32px]'>{day3}</h1>
-                    <img className='mx-auto' src={day3Icon} alt="Day 3 weather icon" />
-                    <p className='text-center text-xl'>{day3High}</p>
+                    <img className='mx-auto pb-4' src={day3Icon} alt="Day 3 weather icon" />
+                    <p className='text-center text-xl pb-4'>{day3High}</p>
                     <p className='text-center text-xl'>{day3Low}</p>
                 </div>
                 <div className='divBackground rounded-lg py-4'>
                     <h1 className='text-center pacifico text-[32px]'>{day4}</h1>
-                    <img className='mx-auto' src={day4Icon} alt="Day 4 weather icon" />
-                    <p className='text-center text-xl'>{day4High}</p>
+                    <img className='mx-auto pb-4' src={day4Icon} alt="Day 4 weather icon" />
+                    <p className='text-center text-xl pb-4'>{day4High}</p>
                     <p className='text-center text-xl'>{day4Low}</p>
                 </div>
                 <div className='divBackground rounded-lg py-4'>
                     <h1 className='text-center pacifico text-[32px]'>{day5}</h1>
-                    <img className='mx-auto' src={day5Icon} alt="Day 5 weather icon" />
-                    <p className='text-center text-xl'>{day5High}</p>
+                    <img className='mx-auto pb-4' src={day5Icon} alt="Day 5 weather icon" />
+                    <p className='text-center text-xl pb-4'>{day5High}</p>
                     <p className='text-center text-xl'>{day5Low}</p>
                 </div>
             </div>
