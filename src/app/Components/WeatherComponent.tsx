@@ -286,6 +286,7 @@ const WeatherComponent = () => {
 
             {/* Search Bar */}
             <div className='pb-6 lg:pb-14'>
+                {/* Dekstop Search Bar */}
                 <div className='lg:flex flex-row items-center justify-between px-4 searchbarBackground h-20 hidden'>
                     <div className='flex flex-row items-center gap-10'>
                         <PiSunglasses className='h-[50px] w-[50px]' />
@@ -298,6 +299,7 @@ const WeatherComponent = () => {
                     </div>
                 </div>
 
+                {/* Mobile Search Bar */}
                 <div className='flex flex-row gap-3 justify-center items-center searchbarBackground h-20 lg:hidden'>
                     <PiSunglasses className='h-[50px] w-[50px]' />
                     <input value={userInput} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUserInput(e.target.value)} className='searchInputBackground border-none rounded-lg text-xl h-10' id='search' type="text" placeholder='Search for a city' />
@@ -316,7 +318,7 @@ const WeatherComponent = () => {
                         </div>
 
                         <div className='grid justify-center px-4 pb-9'>
-                            <h1 className='text-center pacifico text-5xl font-normal mb-10'>{cityName}</h1>
+                            <h1 className='text-center pacifico text-5xl font-normal  mb-10'>{cityName}</h1>
                             <p className='text-center text-5xl font-normal mb-10'>{currentWeather}</p>
                             <p className='text-center text-4xl font-normal mb-10'>{currentConditions}</p>
                             <p className='text-center text-4xl font-normal'>{highLow}</p>
@@ -330,7 +332,7 @@ const WeatherComponent = () => {
                 </div>
 
                 {/* Favorites List */}
-                <div className="divBackground col-span-5 lg:col-span-2 rounded-lg lg:ml-20 max-h-[383px] overflow-y-scroll">
+                <div className="divBackground col-span-5 lg:col-span-2 rounded-lg lg:ml-20 max-h-[383px] overflow-y-auto">
                     <h1 className='text-center pacifico text-[32px] py-2'>Favorites</h1>
 
                     <hr className='border-black w-4/5 mx-auto' />
