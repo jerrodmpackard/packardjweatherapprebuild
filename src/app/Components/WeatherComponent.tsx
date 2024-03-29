@@ -261,12 +261,18 @@ const WeatherComponent = () => {
 
     // Remove Favorites helper function
     const handleRemoveFavorite = (removeCity: string) => {
+        removeFromLocalStorage(removeCity);
+        
         const favorites = getLocalStorage();
 
-        if (favorites.includes(removeCity)) {
-
-        }
+        setFavorites(favorites);
     }
+
+
+    useEffect(() => {
+        const favorites = getLocalStorage();
+        setFavorites(favorites);
+    }, []);
 
     return (
         <div className=''>
@@ -312,8 +318,8 @@ const WeatherComponent = () => {
                     <div className='px-5 py-3 '>
                         {favorites.map((city, idx) => {
                             return (
-                                <div className='flex flex-row items-center gap-4'>
-                                    <PiHeartStraightDuotone className='iconFill' onClick={handleRemoveFavorite} />
+                                <div key={idx} className='flex flex-row items-center gap-4'>
+                                    <PiHeartStraightDuotone className='iconFill' onClick={() => handleRemoveFavorite(city)} />
                                     <p className='text-[32px]'>{city}</p>
                                 </div>
                             )
